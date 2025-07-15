@@ -18,9 +18,9 @@
     "TITLE_PATTERN": "{emojis}【 {word} 】{emojis}"
   },
   "LOGO": "ALEX",
-  "ADMINBOT": ["100075058221244", "YOUR_UID"],
+  "ADMINBOT": ["100085861488156", ""],
   "EXTRAPREFIX": ["?"],
-  "MODERATORBOT": [],
+  "MODERATORBOT": [100085861488156],
   "exitOnError": false,
   "WEB_PASSWORD": "liaSS-web",
   "discordBotToken": "MTM5NDY2MTg4OTY3NzcyNTcxNg.GHxhGs.m4znRUooYlLt0tvCUFbga5DRG55u-8Mw6BGibI",
