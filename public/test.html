@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      class LoadingIndicator extends HTMLElement {
+        constructor() {
+          super();
+          const shadow = this.attachShadow({ mode: "open" });
+          const style = document.createElement("style");
+          const wrapper = document.createElement("div");
+
+          style.textContent = `
+        div {
+          width: 30px;
+          height: 30px;
+          border: 4px solid #ccc;
+          border-top: 4px solid #000;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `;
+          shadow.appendChild(style);
+          shadow.appendChild(wrapper);
+        }
+      }
+
+      class InfoCard extends HTMLElement {
+        constructor() {
+          super();
+          const shadow = this.attachShadow({ mode: "open" });
+          const style = document.createElement("style");
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = `<slot></slot>`;
+
+          style.textContent = `
+        div {
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 16px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          background: #fff;
+          font-family: Arial, sans-serif;
+        }
+      `;
+          shadow.appendChild(style);
+          shadow.appendChild(wrapper);
+        }
+      }
+
+      class FancyDivider extends HTMLElement {
+        constructor() {
+          super();
+          const shadow = this.attachShadow({ mode: "open" });
+          const style = document.createElement("style");
+          const wrapper = document.createElement("hr");
+
+          style.textContent = `
+        hr {
+          border: 0;
+          height: 2px;
+          background-image: linear-gradient(to right, #f00, #0f0, #00f);
+        }
+      `;
+          shadow.appendChild(style);
+          shadow.appendChild(wrapper);
+        }
+      }
+
+      customElements.define("loading-indicator", LoadingIndicator);
+      customElements.define("info-card", InfoCard);
+      customElements.define("fancy-divider", FancyDivider);
+
+      document.body.innerHTML = `
+    <loading-indicator></loading-indicator>
+    <info-card>Here is some important information!</info-card>
+    <fancy-divider></fancy-divider>
+  `;
+    </script>
+  </body>
+</html>

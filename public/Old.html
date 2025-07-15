@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cassidy</title>
+  <link rel="stylesheet" href="style.css">
+  
+
+</head>
+
+<body>
+  <div class="header" id="header">
+    <div class="replitHb">
+      <div class="hamburger" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div style="transform: scale(120%);" class="bar"></div>
+      </div>
+    </div>
+
+    <h2 class="replit">Cassidy<span class="gradientFont">BoT</span></h2>
+    <h4 class="replit" style="top: 50px; opacity: 0.6">Chatbot System</h4>
+  </div>
+
+  <div class="menu-options" id="menuOptions">
+    <a href="#" onclick="handleOptionClick('Option 1')"><strong>Projects</strong></a>
+    <a href="#" onclick="handleOptionClick('Option 2')"><strong>Docs</strong></a>
+    <a href="#" onclick="handleOptionClick('Option 3')"><strong>Support</strong></a>
+    <a href="#" onclick="handleOptionClick('https://lianeapi.onrender.com')"><strong>API</strong></a>
+  </div>
+
+  <br><br><br><br><br>
+
+  <div class="container">
+    <h3>Greetings</h3>
+    <p>Welcome to CassidyBoT, your gateway to effortless and cost-free bot hosting.</p>
+    <a href="javascript:void(0)" class="button">+ Create Project</a>
+  </div><br>
+  <h2 class="text">Cassidy<span class="gradientFont">BoT</span> Core</h2>
+  <div class="container">
+    <h3><span class="gradientFont">Core </span> Membership</h3>
+    <p>Do you want to get an opportunity to join and see our development process? Join now!</p>
+    <a href="javascript:void(0)" class="button" style="color: black; background: white;">Get Core Plan</a>
+  </div>
+  
+  <br>
+  <h2 class="text">Cassidy<span class="gradientFont">BoT</span> Plans</h2>
+  <div class="container">
+            <h3>Free Plan</h3>
+            <p>Get started with our Free Plan. Ideal for beginners and small projects. Experience autobot hosting without any cost.</p>
+            <a class="button">Get Started for Free</a>
+        </div>
+
+        <div class="container">
+            <h3>Pro Plan</h3>
+            <p>Unlock advanced features with our Pro Plan. Custom container variations, enhanced security, and more. Perfect for scaling your autobot projects.</p>
+            <a class="button">Upgrade to Pro</a>
+        </div>
+
+        <div class="container gradientTab">
+            <h3>Premium Plan</h3>
+            <p>The ultimate hosting experience. Premium support, unlimited resources, and exclusive features. Take your autobot projects to the next level.</p>
+            <a class="button" style="background: white; color: black;">Explore Premium</a>
+        </div>
+  <br>
+  <h2 class="text">Cassidy<span class="gradientFont">BoT</span> Commands</h2>
+  
+  <div id="cmds">
+    
+  </div>
+  <script>
+    function toggleMenu() {
+      const menuOptions = document.getElementById("menuOptions");
+      menuOptions.classList.toggle("active-menu");
+
+      const header = document.getElementById("header");
+      header.style.height = menuOptions.classList.contains("active-menu") ? menuOptions.scrollHeight + 20 + 'px' : "0px";
+    }
+
+    function handleOptionClick(option) {
+      console.log(option + " clicked!");
+      window.location.href = option;
+      toggleMenu();
+    }
+    window.onload = async() => {
+      const res = await fetch("/api/commands");
+      const commands = await res.json();
+      let names = [];
+      const cmds = document.getElementById("cmds");
+      for (const command in commands) {
+        const cmd = commands[command];
+        if (names.includes(cmd.meta.name)) {
+          continue;
+        }
+        names.push(cmd.meta.name);
+        const { meta } = cmd;
+        cmds.innerHTML += `<div class="container">
+            <h3>${meta.name}</h3>
+            <p>${meta.description || "No Description"}</p>
+            <br>
+            <details>
+      <summary><em>Click to see all properties.</em></summary>
+      ${mapKey(meta)}
+</details>
+   </div>`;
+      }
+    }
+    function mapKey(meta, indent = 0) {
+  const indentation = "&nbsp;".repeat(indent * 2);
+  return Object.entries(meta || {}).map(([key, value]) => {
+    if (Array.isArray(value)) {
+      const listItems = value.map(item => `<li>${item}</li>`).join("");
+      return `<p style="margin-left: ${indent * 20}px;"><strong>${key}</strong>:<ul>${listItems}</ul></p>`;
+    } else if (typeof value === "object" && value !== null) {
+      return `<p style="margin-left: ${indent * 20}px;"><strong>${key}</strong>:<br>${mapKey(value, indent + 1)}</p>`;
+    } else {
+      return `<p style="margin-left: ${indent * 20}px;"><strong>${key}</strong>: ${value}</p>`;
+    }
+  }).join("\n");
+      }
+    
+    
+  </script>
+</body>
+
+</html>

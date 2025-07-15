@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "checkJs": true,
+    "allowJs": true,
+    "types": [null],
+    "lib": ["dom", "ESNext"]
+  },
+  "include": ["**/*.js", "**/*.mjs", "../CommandFiles/commands/autocassidy.js"]
+}

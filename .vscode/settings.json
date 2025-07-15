@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.lang": "properties"
+  },
+  "editor.occurrencesHighlight": "singleFile",
+  "editor.semanticHighlighting.enabled": true
+}

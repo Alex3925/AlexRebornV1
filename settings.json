@@ -1,0 +1,105 @@
+{
+  "NOTES_1": [
+    "Please configure the PREFIX, ADMINBOT, also make sure the knownURL is set to your server url without trailing /",
+    "You can do noFB: true, to disable facebook login.",
+    "100075058221244 is not required in ADMINBOT.",
+    "DO NOT REVEAL settings.json publicly, make sure to use a private repository.",
+    "LOGO is your custom cassidy logo TEXT (which shows in prefix, menu, etc). You can modify it based on your likings! Leave an empty string to use the original logo TEXT"
+  ],
+  "railwayTips": "Use USA East as region for railway, and render. ",
+  "GRADIENT_THEME": "retro",
+  "knownURL": "https://cassidyredux.onrender.com",
+  "noFB": false,
+  "PREFIX": "#",
+  "NICKNAME": "Cassidy Bot",
+  "CUSTOM_STYLE": {
+    "enabled": false,
+    "note": "When enabled, this will allow you to customize certain styles of bot responses. {word} represents non-emoji texts and {emojis} represents emojis. Change the TITLE_PATTERN to your likings.",
+    "TITLE_PATTERN": "{emojis}【 {word} 】{emojis}"
+  },
+  "LOGO": "",
+  "ADMINBOT": ["100075058221244", "YOUR_UID"],
+  "EXTRAPREFIX": ["_"],
+  "MODERATORBOT": [],
+  "exitOnError": false,
+  "WEB_PASSWORD": "liaSS-web",
+  "discordBotToken": "",
+  "discordClientID": "",
+  "pageAccessToken": "",
+  "pageVerifyToken": "",
+  "mqttRestart": {
+    "enabled": true,
+    "interval": 3600000,
+    "note": "This restarts the MQTT Listener on facebook."
+  },
+  "processRestart": {
+    "enabled": true,
+    "interval": 3600000,
+    "note": "This restarts the entire process."
+  },
+  "FCA": {
+    "path": "./ws3-fca/index",
+    "selfListen": false,
+    "selfListenEvent": false,
+    "listenEvents": true,
+    "listenTyping": false,
+    "updatePresence": false,
+    "forceLogin": true,
+    "autoMarkDelivery": false,
+    "autoMarkRead": false,
+    "autoReconnect": true,
+    "online": true,
+    "emitReady": false,
+    "randomUserAgent": false,
+    "userAgent": "utils.defaultUserAgent"
+  },
+  "autoRefreshAvatar": false,
+  "defaultLang": "en",
+  "CASS_WATCH": {
+    "enabled": false,
+    "note": "Cassidy Watch is a powerful file backup system that uses meta.version to track changes to your files. It is highly recommended to keep this enabled."
+  },
+  "autoCreateDB": false,
+  "MongoConfig": {
+    "status": true,
+    "uri": "MONGO_URI",
+    "note": "DO NOT MODIFY THIS IF YOU DO NOT KNOW WHAT YOU WERE DOING. They serve as .env keys for mongo uri."
+  },
+  "credentials": {
+    "email": "",
+    "password": "",
+    "email_asEnvKey": false,
+    "password_asEnvKey": false,
+    "note": "This is for the bot account, not your main account, if email_asEnvKey or password_asEnvKey is true, it will use the .env key provided in email and password fields, this is helpful when hiding the credentials.",
+    "note2": "This is also deprecated."
+  },
+  "maintenanceMode": false,
+  "noLevelUI": true,
+  "noRibbonUI": true,
+  "logPluginChange": false,
+  "warnWhenNoPrefix": false,
+  "strictNoPrefix": false,
+  "requireRgistration": false,
+  "censorInput": false,
+  "censorOutput": true,
+  "forceWebUID": false,
+  "disableInflation": false,
+  "standardSpectra": false,
+  "autoGoogleTranslate": "",
+  "silentNotiMode": false,
+  "verboseErrorStacks": false,
+  "verboseBotMode": false,
+  "gambleNeedsMint": true,
+  "strictGambleNeedsMint": true,
+  "DEBUG": false,
+  "DEBUG_PROPS": [
+    "CommandContext.threadsDB",
+    "CommandContext.usersDB",
+    "CommandContext.money",
+    "CommandContext.output"
+  ],
+  "disableUIDLinks": false,
+  "ignoreUIDLinksOfAdminBOT": true,
+  "disabledCategories": ["Xavia Economy", "Idle Accumulation Games"],
+  "showAuthorOnStyle": false
+}

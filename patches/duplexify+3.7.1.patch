@@ -1,0 +1,38 @@
+diff --git a/node_modules/duplexify/index.js b/node_modules/duplexify/index.js
+index 18634c2..1ff2d4b 100644
+--- a/node_modules/duplexify/index.js
++++ b/node_modules/duplexify/index.js
+@@ -192,8 +192,8 @@ Duplexify.prototype._destroy = function(err) {
+   }
+ 
+   if (this._forwardDestroy) {
+-    if (this._readable && this._readable.destroy) this._readable.destroy()
+-    if (this._writable && this._writable.destroy) this._writable.destroy()
++    if (this._readable && this._readable?.destroy) this._readable.destroy()
++    if (this._writable && this._writable?.destroy) this._writable.destroy()
+   }
+ 
+   this.emit('close')
+@@ -213,9 +213,9 @@ Duplexify.prototype._finish = function(cb) {
+   var self = this
+   this.emit('preend')
+   onuncork(this, function() {
+-    end(self._forwardEnd && self._writable, function() {
++    end(self?._forwardEnd && self?._writable, function() {
+       // haxx to not emit prefinish twice
+-      if (self._writableState.prefinished === false) self._writableState.prefinished = true
++      if (self?._writableState.prefinished === false) self._writableState.prefinished = true
+       self.emit('prefinish')
+       onuncork(self, cb)
+     })
+@@ -227,8 +227,8 @@ Duplexify.prototype.end = function(data, enc, cb) {
+   if (typeof enc === 'function') return this.end(data, null, enc)
+   this._ended = true
+   if (data) this.write(data)
+-  if (!this._writableState.ending) this.write(SIGNAL_FLUSH)
+-  return stream.Writable.prototype.end.call(this, cb)
++  if (!this._writableState?.ending) this.write(SIGNAL_FLUSH)
++  return stream.Writable.prototype?.end?.call(this, cb)
+ }
+ 
+ module.exports = Duplexify

@@ -1,0 +1,240 @@
+<div
+  id="chatPad"
+  class="chatPad"
+  style="margin-left: 5%; margin-right: 5%"
+></div>
+<br />
+<div class="fixedBox">
+  <textarea
+    class="textinput"
+    placeholder="Type your message..."
+    id="userText"
+  ></textarea>
+  <button class="send-button" onclick="send()">Send</button>
+</div>
+
+<style>
+  body {
+    background-color: #1e1e1e;
+    color: #cfcfcf;
+    font-family: "Courier New", Courier, monospace;
+    margin: 0;
+    padding: 0;
+  }
+
+  .chatPad {
+    width: 90%;
+    height: 400px;
+    background-color: #1d1f21;
+    padding: 10px;
+    border-radius: 8px;
+    color: #cfcfcf;
+    overflow-y: auto;
+    font-size: 16px;
+    line-height: 1.5;
+    border: 2px solid #444;
+  }
+
+  .textinput {
+    width: 80%;
+    height: 40px;
+    background-color: #333;
+    color: #cfcfcf;
+    border: 2px solid #444;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    font-family: "Courier New", Courier, monospace;
+    margin-right: 10px;
+  }
+
+  .send-button {
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    padding: 8px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .send-button:hover {
+    background-color: #45a049;
+  }
+
+  .response-message-container,
+  .user-message-container {
+    margin-bottom: 10px;
+  }
+
+  .user-message {
+    padding: 8px;
+    background-color: #333;
+    color: #cfcfcf;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #444;
+  }
+
+  .response-message {
+    padding: 8px;
+    background-color: #444;
+    color: #ffffff;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #555;
+  }
+
+  .button {
+    color: #1e90ff;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .button:hover {
+    text-decoration: underline;
+  }
+
+  .gradientTab {
+    background: linear-gradient(90deg, #3a3a3a, #2d2d2d);
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const MAX_PROPERTIES = 20;
+
+  const infos = new Proxy(
+    {},
+    {
+      get(target, prop) {
+        return JSON.parse(localStorage.getItem("infos") || "{}")[prop];
+      },
+      set(target, prop, value) {
+        const storedInfos = JSON.parse(localStorage.getItem("infos") || "{}");
+
+        if (Object.keys(storedInfos).length >= MAX_PROPERTIES) {
+          const oldestProp = Object.keys(storedInfos)[0];
+          delete storedInfos[oldestProp];
+        }
+
+        storedInfos[prop] = value;
+        localStorage.setItem("infos", JSON.stringify(storedInfos));
+        return true;
+      },
+    }
+  );
+
+  function loadConvo() {
+    const convo = JSON.parse(localStorage.getItem("convo") || "[]");
+    return convo;
+  }
+
+  window.onload = () => {
+    const chatPad = document.getElementById("chatPad");
+    const convo = loadConvo();
+    convo.forEach((c) => {
+      if (c.message) {
+        return appendSend({ message: c.message, chatPad });
+      }
+      return appendRep({ body: c.body, messageID: c.messageID, chatPad });
+    });
+    smoothScroll();
+  };
+
+  function pushConvo(data) {
+    const convo = loadConvo();
+
+    convo.push(data);
+
+    if (convo.length > MAX_PROPERTIES) {
+      convo.splice(0, convo.length - MAX_PROPERTIES);
+    }
+
+    localStorage.setItem("convo", JSON.stringify(convo));
+  }
+
+  function appendRep({ body, messageID, chatPad }) {
+    pushConvo({ body, messageID, chatPad });
+    chatPad.innerHTML += `<div class="response-message-container"><div class="response-message">${sanitize(
+      body
+    )}<br><br><a class="button" href="javascript:void(0)" style="background: white; color: black;" onclick="reply('${messageID}')">Reply Here</a></div></div>`;
+  }
+
+  function appendSend({ message, chatPad }) {
+    pushConvo({ message });
+    chatPad.innerHTML += `<div class="user-message-container"><div class="user-message gradientTab">${sanitize(
+      message
+    )}</div></div>`;
+  }
+
+  async function send(isReply, mid, extra = {}) {
+    const message = document.getElementById("userText").value?.trim();
+    if (!message) {
+      return alert(
+        `You can't send an empty message, please type at the textarea first.`
+      );
+    }
+    const chatPad = document.getElementById("chatPad");
+    document.getElementById("userText").value = "";
+    try {
+      let appended = message;
+      if (isReply) {
+        const { body } = infos[mid];
+        appended = `Replying to: ${limitStr(body, 10)}\n\n${message}`;
+      }
+      let payload = {
+        params: {
+          body: message,
+          messageReply: isReply ? { ...infos[mid] } : null,
+          type: isReply ? "message_reply" : "message",
+          ...extra,
+        },
+      };
+
+      const emojis = ["👍", "❤️", "😮", "😢", "😠", "👎"];
+      if (isReply && emojis.includes(message)) {
+        const { messageID, body } = infos[mid];
+        appended = `Reacting to ${limitStr(body, 10)}\n\n${message}`;
+        payload = {
+          params: {
+            type: "message_reaction",
+            messageID,
+            reaction: message,
+            userID: 1,
+            ...extra,
+          },
+        };
+      }
+
+      appendSend({ message: appended, chatPad });
+      smoothScroll();
+      const response = await axios.get(`/postWReply`, payload);
+      const {
+        result,
+        result: { body, messageID },
+      } = response.data;
+      infos[messageID] = result;
+      appendRep({ messageID, body, chatPad });
+      smoothScroll();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function reply(mid) {
+    await send(true, mid);
+  }
+
+  function sanitize(input) {
+    const sanitizedInput = input
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    const sanitizedWithLineBreaks = sanitizedInput.replace(/\n/g, "<br>");
+
+    return sanitizedWithLineBreaks;
+  }
+</script>

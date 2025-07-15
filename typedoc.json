@@ -1,0 +1,12 @@
+{
+  "entryPointStrategy": "expand",
+  "tsconfig": "./tsconfig.json",
+  "excludeExternals": true,
+  "exclude": ["**/node_modules/**/*"],
+  "skipErrorChecking": true,
+  "out": "docs",
+  "entryPoints": [
+    "./CommandFiles/modules",
+    "./CommandFiles/plugins"
+  ]
+}

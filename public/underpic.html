@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UnderPic!</title>
+    <link rel="stylesheet" href="style.css" />
+    <audio src="PurpleDream.mp3" autoplay loop></audio>
+
+    <link rel="stylesheet" href="Undertale-CSS/undertale.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="stats"></div>
+    <script>
+      window.onload = async () => {
+        const query = new URLSearchParams(window.location.search);
+        const targetUser = query.get("id");
+        const stats = document.getElementById("stats");
+        const res = await fetch("/api/stat");
+        const allUsers = await res.json();
+        let sortedUsers = {};
+        const sortedUsersKey = Object.keys(allUsers)
+          .sort((a, b) => allUsers[b].exp - allUsers[a].exp)
+          .slice(0, 10);
+        for (const key of sortedUsersKey) {
+          sortedUsers[key] = allUsers[key];
+        }
+        if (targetUser) {
+          sortedUsers = {
+            [targetUser]: allUsers[targetUser],
+          };
+        }
+        for (const uid in sortedUsers) {
+          const info = sortedUsers[uid] ?? {};
+          stats.innerHTML += `<div class="containerUT"><span class="ut-stats"><span style="font-size: 20px;"><span style="color: yellow;">${info.name ?? "Not Registered "}</span> LV ${info.lv ?? "??"}  HP ${info.hp ?? "??"}/${info.hp ?? "??"}</span><br>
+  GOLD: ${info.gold ?? "??"}<br>
+  DF: ${info.df ?? "??"}<br>
+  AT: ${info.at ?? "??"}<br>
+  SPARES: ${info.spares ?? "??"}<br>
+  KILLS: ${info.kills ?? "??"}</span><div>`;
+        }
+      };
+    </script>
+  </body>
+</html>

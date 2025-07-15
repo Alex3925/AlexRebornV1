@@ -1,0 +1,282 @@
+<script>
+  window.onload = async () => {
+    const res = await fetch("/api/commands");
+    const commands = await res.json();
+    let names = [];
+    const cmds = document.getElementById("cmds");
+
+    for (const command in commands) {
+      const cmd = commands[command];
+      if (names.includes(cmd.meta.name)) {
+        continue;
+      }
+      names.push(cmd.meta.name);
+      const { meta } = cmd;
+
+      const container = document.createElement("div");
+      container.className = "container commandBox";
+
+      const icon = document.createElement("h3");
+      icon.textContent = (meta.icon ?? "").trim() || "📄";
+      icon.classList.add("cmd-icon");
+      container.appendChild(icon);
+
+      const h3 = document.createElement("h3");
+      h3.textContent = toTitleCase(meta.name ?? "Unnamed");
+      h3.classList.add("cmd-name");
+      container.appendChild(h3);
+
+      container.onclick = () => showModal(cmd);
+      cmds.appendChild(container);
+    }
+
+    const modalWrapper = document.createElement("div");
+    modalWrapper.id = "modal-wrapper";
+    modalWrapper.className = "modal-wrapper";
+    modalWrapper.innerHTML = `
+    <div class="modal-content">
+      <span class="close">×</span>
+      <div id="modal-properties"></div>
+    </div>
+  `;
+    document.body.appendChild(modalWrapper);
+
+    const closeBtn = modalWrapper.querySelector(".close");
+    closeBtn.onclick = () => (modalWrapper.style.display = "none");
+    window.onclick = (event) => {
+      if (event.target === modalWrapper) {
+        modalWrapper.style.display = "none";
+      }
+    };
+  };
+
+  function showModal(cmd) {
+    const modalWrapper = document.getElementById("modal-wrapper");
+    const modalProperties = document.getElementById("modal-properties");
+    modalProperties.innerHTML = "";
+
+    const area = document.createElement("textarea");
+    area.className = "textarea";
+    area.placeholder = "Enter arguments...";
+    area.rows = 1;
+
+    const resultBox = document.createElement("div");
+    resultBox.classList.add("container");
+
+    const sendBtn = document.createElement("button");
+    sendBtn.classList.add("vanillaButton");
+    sendBtn.textContent = "Submit";
+    sendBtn.addEventListener("click", async () => {
+      const argsJoined = area.value;
+      const body = `/${cmd.meta.name}${
+        argsJoined.startsWith("-") ? argsJoined : ` ${argsJoined}`
+      }`;
+      const payload = {
+        body,
+        senderID: localStorage.getItem("panelID"),
+        type: "message",
+        threadID: localStorage.getItem("panelID"),
+      };
+      const res = await fetch("/postNew", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+
+      if (data.status === "success" && data.result.html) {
+        resultBox.innerHTML = data.result.html;
+      }
+    });
+
+    modalProperties.append(resultBox, area, sendBtn);
+    modalWrapper.style.display = "flex";
+  }
+
+  function toTitleCase(str) {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  }
+</script>
+
+<style>
+  #cmds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    justify-items: start;
+    gap: 20px;
+    width: 100%;
+  }
+
+  #cmds > * {
+    min-width: 100px;
+    width: 100%;
+  }
+
+  #modal-properties {
+    height: 100%;
+  }
+
+  .commandBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    aspect-ratio: 1;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0);
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .commandBox::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
+    transform: skewX(-25deg);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .commandBox:hover {
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .commandBox:hover::before {
+    left: 125%;
+  }
+
+  .commandBox:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  .prop-button {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .prop-button:hover {
+    background-color: #e0e0e0;
+  }
+
+  .modal-wrapper {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(20px);
+  }
+
+  .modal-content {
+    padding: 20px;
+    width: 80%;
+    max-width: min(500px, 90vh);
+    position: relative;
+    max-height: 60vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row-reverse;
+    border-radius: 18px;
+    background-color: #1f1f1fc2;
+    color: white;
+    gap: 10px;
+    justify-content: center;
+    align-items: flex-start;
+    animation: openApp 0.2s ease-out forwards;
+  }
+
+  #modal-properties {
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: flex-end;
+    animation: openApp 0.2s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  #modal-properties .container {
+    width: 100%;
+  }
+
+  .close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: rgb(199, 197, 197);
+    text-decoration: none;
+  }
+
+  body.modal-active {
+    overflow: hidden;
+  }
+
+  .cmd-name {
+    font-size: 16px;
+  }
+
+  .cmd-icon {
+    font-size: 20px;
+  }
+</style>
+
+<div>
+  <div
+    class="chat-con"
+    style="
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+    "
+  >
+    <div class="container" style="width: 100%">
+      <h3>Web Mode <span class="gradientFont">New!</span></h3>
+      <p>
+        Try or test out Cassidy FB Chatbot in web mode. Please note that some
+        features may be lacking.
+      </p>
+      <p>
+        Conversations are limited to a maximum of 20 messages. Older messages
+        will not be saved.
+      </p>
+      <a href="/f:chatv2" class="button">+ Create Conversation</a>
+    </div>
+    <br />
+    <h2 class="text">Cassidy<span class="gradientFont">BoT</span> Commands</h2>
+    <div id="cmds"></div>
+  </div>
+</div>

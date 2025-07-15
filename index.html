@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CassidySpectra - All-Purpose Chatbot Framework</title>
+  <meta name="description"
+    content="CassidySpectra: A TypeScript-based chatbot framework for Facebook Messenger, Discord, and more. Built with advanced tooling and rich libraries by Liane Cagara.">
+  <meta name="keywords"
+    content="CassidySpectra, chatbot, TypeScript, Facebook bot, Discord bot, JavaScript, Liane Cagara, bot framework">
+  <meta name="author" content="Liane Cagara">
+  <meta property="og:title" content="CassidySpectra - All-Purpose Chatbot Framework">
+  <meta property="og:description"
+    content="Discover CassidySpectra, a powerful TypeScript chatbot framework for Facebook, Discord, and more. Explore the code on GitHub.">
+  <meta property="og:image" content="https://lianecagara.github.io/CassidySpectra/preview-image.jpg">
+  <meta property="og:url" content="https://lianecagara.github.io/CassidySpectra">
+  <meta property="og:type" content="website">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --chat-admin-text-color: #ffffff;
+      --chat-composer-background-color: #8c6962;
+      --chat-composer-button-color: #ff8080;
+      --chat-composer-caret-color: #ff8080;
+      --chat-composer-input-background-color: #000000;
+      --chat-composer-input-text-placeholder-color: #999999;
+      --chat-delivery-receipt-color: #ff8080;
+      --chat-edit-message-overlay-color: #8c6262;
+      --chat-incoming-message-bubble-background-color: #303030;
+      --chat-incoming-message-text-color: #ffffff;
+      --chat-message-text-color: #ffffff;
+      --chat-outgoing-message-bubble-background-color: #ff8080;
+      --chat-primary-button-background-color: #ff8080;
+      --chat-replied-message-background-color: #554444;
+      --chat-scrollbar-thumb-color: rgba(227, 172, 172, 0.7);
+      --chat-scrollbar-track-color: transparent;
+      --mwp-header-background-color: #8c6262;
+      --mwp-header-background-color-alt: #946d6d;
+      --mwp-header-button-color: #ff8080;
+      --mwp-header-text-color: #ffffff;
+      --mwp-message-list-actions-gap: 4px;
+      --mwp-message-list-actions-width: calc(84px + 3 * 4px);
+      --mwp-message-row-background: transparent;
+      --mwp-primary-theme-color: #ff8080;
+      --mwp-subheader-text-color: #ff8080;
+      --reaction-pill-background-color: #303030;
+      --reaction-pill-multireact-selected-color: #ffe3e3;
+      --text-highlight: rgba(255, 128, 128, 0.5);
+    }
+
+    * {
+      font-family: "Montserrat", "Helvetica", "Arial", sans-serif;
+      box-sizing: border-box;
+      letter-spacing: 0.02em;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      color: var(--chat-message-text-color);
+      margin: 0;
+      padding: 0;
+      --h: 70px;
+      margin-top: var(--h);
+      background-color: var(--mwp-header-background-color);
+      font-size: 16px;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header {
+      background-color: var(--mwp-header-background-color-alt);
+      color: var(--mwp-header-text-color);
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+      height: var(--h);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .bar {
+      width: 25px;
+      height: 3px;
+      background-color: var(--mwp-header-button-color);
+      margin: 4px 0;
+    }
+
+    .menu-options {
+      width: 90%;
+      max-width: 300px;
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      top: 70px;
+      right: 0;
+      background-color: var(--chat-incoming-message-bubble-background-color);
+      padding: 10px 0;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s ease-out;
+      z-index: 3;
+      backdrop-filter: blur(5px);
+      max-height: calc(100vh - 70px);
+      overflow-y: auto;
+    }
+
+    .menu-options.active-menu {
+      display: flex;
+    }
+
+    .menu-options a {
+      color: var(--chat-message-text-color);
+      text-decoration: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .menu-options a:hover {
+      background-color: var(--mwp-primary-theme-color);
+      color: var(--chat-admin-text-color);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      width: 80%;
+      margin: 25px auto;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: var(--chat-incoming-message-bubble-background-color);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .container:hover {
+      transform: scale(1.02);
+    }
+
+    .container h2 {
+      margin: 0 0 1rem;
+      font-size: 1.8rem;
+      color: var(--mwp-subheader-text-color);
+    }
+
+    .container p {
+      font-size: 1.1rem;
+      margin: 0 0 1rem;
+    }
+
+    a {
+      font-weight: bold;
+      color: var(--mwp-primary-theme-color);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: filter 0.2s ease;
+    }
+
+    a:hover,
+    a:focus-visible {
+      filter: brightness(50%);
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 12px 24px;
+      font-size: 16px;
+      text-align: center;
+      text-decoration: none;
+      background-color: var(--mwp-primary-theme-color);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-weight: bold;
+      color: var(--chat-admin-text-color);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0);
+      transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
+      transform: skewX(-25deg);
+      transition: left 0.5s ease-in-out;
+    }
+
+    .cta-button:hover {
+      background-color: var(--chat-composer-button-color);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .cta-button:hover::before {
+      left: 125%;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background-color: var(--reaction-pill-background-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .feature-card:hover {
+      transform: scale(1.05);
+    }
+
+    .feature-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.3rem;
+      color: var(--mwp-subheader-text-color);
+    }
+
+    .feature-card p {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--chat-admin-text-color);
+      opacity: 0.6;
+      margin: 20px 0;
+    }
+
+    footer {
+      background-color: var(--chat-incoming-message-bubble-background-color);
+      color: var(--chat-message-text-color);
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 2rem;
+      width: 100%;
+    }
+
+    footer a {
+      color: var(--mwp-primary-theme-color);
+    }
+  </style>
+  <script>document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const menu = document.querySelector('.menu-options');
+
+      hamburger.addEventListener('click', () => {
+        menu.classList.toggle('active-menu');
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div class="header">
+    <h1>CassidySpectra</h1>
+    <div class="hamburger">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <div class="menu-options">
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#get-started">Get Started</a>
+      <a href="#credits">Credits</a>
+      <a href="https://github.com/lianecagara/CassidySpectra">GitHub</a>
+    </div>
+  </div>
+  <div class="container" id="about">
+    <h2>About CassidySpectra</h2>
+    <p>
+      CassidySpectra is a powerful, all-purpose chatbot framework built with TypeScript, supporting platforms like
+      Facebook Messenger, Discord, and more. As a fork of CassidyRedux, it offers enhanced features, superior
+      performance, and the best tooling for developers. Created and maintained by <a
+        href="https://github.com/lianecagara">Liane Cagara</a>.
+    </p>
+    <a href="https://github.com/lianecagara/CassidySpectra" class="cta-button">Explore on GitHub</a>
+  </div>
+  <div class="container" id="features">
+    <h2>Key Features</h2>
+    <div class="features">
+      <div class="feature-card">
+        <h3>Advanced TypeScript Tooling</h3>
+        <p>Enjoy top-tier TypeScript support with autocomplete and type safety for seamless development.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Multi-Platform Support</h3>
+        <p>Run your bot on Facebook Messenger, Discord, and other platforms with ease.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Rich Command System</h3>
+        <p>Create and manage commands with premade templates and automatic styling.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Extensible Plugins</h3>
+        <p>Integrate APIs, add plugins, and customize with MongoDB and idle game support.</p>
+      </div>
+    </div>
+  </div>
+  <div class="container" id="get-started">
+    <h2>Get Started</h2>
+    <p>
+      Ready to build your own chatbot? Follow the <a
+        href="https://github.com/lianecagara/CassidySpectra#cassidy-bot-tutorial">Cassidy Bot Tutorial</a> to set up
+      CassidySpectra on Railway, configure Facebook Messenger, and deploy your bot. Check out the <a
+        href="https://github.com/lianecagara/CassidySpectra#creating-commands">command creation guide</a> to start
+      coding.
+    </p>
+  </div>
+  <div class="container" id="credits">
+    <h2>Credits</h2>
+    <p>
+      Created by <a href="https://github.com/lianecagara">Liane Cagara</a>. Special thanks to <a
+        href="https://github.com/MrKimstersDev">MrKimstersDev (Symer Steve Berondo)</a> for the tutorial documentation.
+    </p>
+  </div>
+  <footer>
+    <p>
+      © 2025 Liane Cagara. Licensed under a <a
+        href="https://github.com/lianecagara/CassidySpectra/blob/main/LICENSE">special license</a>.
+      Fork on <a href="https://github.com/lianecagara/CassidySpectra">GitHub</a>.
+    </p>
+  </footer>
+</body>
+
+</html>

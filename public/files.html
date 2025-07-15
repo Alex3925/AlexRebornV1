@@ -1,0 +1,58 @@
+<div id="dynamic"></div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<style>
+  .codeDiv {
+    background-color: black;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    line-break: anywhere;
+  }
+</style>
+<script>
+  window.onload = async () => {
+    const query = new URLSearchParams(window.location.search);
+    const dyna = document.getElementById("dynamic");
+    const fileName = query.get("fileName");
+    if (fileName) {
+      return await handleFile(fileName);
+    }
+
+    async function handleFile(fileName) {
+      const response = await axios.get(`/api/files`, {
+        params: {
+          fileName,
+        },
+      });
+      const { file } = response.data;
+      const { content, size, mtime } = file;
+      dyna.innerHTML = `<div class="container">
+      <h3>${fileName}<h3>
+      <h4>${size}</h4>
+      <h4>Last Modified: ${mtime}</h4>
+      <a onclick="window.location.href = '/f:files';" class="button">Go Back</a><br><br>
+      <div class="codeDiv"><code>
+${content}
+      </code></div>
+      
+</div>`;
+      hljs.highlightAll();
+    }
+    const response = await axios.get("/api/files");
+    const [...files] = [...response.data.files];
+    for (const file of files) {
+      const { name, size, mtime } = file;
+      dyna.innerHTML += `<div class="container">
+        <strong>${name}</strong>
+        <p>${size}</p>
+        <p>Last Modified: ${mtime}</p>
+        <a onclick="window.location.href = '/f:files?fileName=${encodeURIComponent(name)}';" class="button">+ Open</a>
+  </div>
+
+  `;
+    }
+  };
+</script>

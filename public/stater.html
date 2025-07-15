@@ -1,0 +1,62 @@
+<div class="container">
+  <h3>State <span class="gradientFont">Extractor +</span></h3>
+  <input
+    id="email"
+    type="text"
+    class="textinput"
+    placeholder="example@example.com"
+  />
+  <input
+    id="password"
+    type="password"
+    class="textinput"
+    placeholder="mypassword123"
+  />
+  <a
+    id="submitButton"
+    href="javascript:void(0)"
+    onclick="submit()"
+    class="button"
+    >Extract State</a
+  >
+</div>
+<div class="container" id="result" disabled>
+  <h3>Result</h3>
+  <p id="stateContainer">Please press extract to proceed..</p>
+  <a
+    href="javascript:void(0)"
+    class="button"
+    onclick="copyToClipboard(document.getElementById('stateContainer').textContent)"
+    >+ Copy</a
+  >
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  async function submit() {
+    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value;
+    const submitButton = document.getElementById("submitButton");
+    const stateCon = document.getElementById("stateContainer");
+    try {
+      submitButton.disabled = true;
+      submitButton.style.opacity = 0.5;
+      submitButton.innerHTML = "Extracting...";
+      const response = await axios.post("/postcred", {
+        email,
+        password,
+      });
+      console.log({ email, password });
+      const { error, appState } = response.data;
+      if (error) {
+        throw new Error(error);
+      }
+      stateCon.innerHTML = `<pre><code>${JSON.stringify(appState, null, 2)}</pre></code>`;
+    } catch (error) {
+      console.log(error);
+      stateCon.innerHTML = `<p>Error: ${error.message}</p>`;
+      submitButton.disabled = false;
+      submitButton.style.opacity = 1;
+      submitButton.innerHTML = "Try again.. (error)";
+    }
+  }
+</script>

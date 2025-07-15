@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES2024",
+    "lib": ["ES2024"],
+    "types": ["node"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "declaration": true,
+    "declarationMap": true,
+    "allowJs": true
+    // "checkJs": true
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules"]
+}
