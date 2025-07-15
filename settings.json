@@ -25,8 +25,8 @@
   "WEB_PASSWORD": "liaSS-web",
   "discordBotToken": "MTM5NDY3NDkxMTM5MzYxNjEwMg.GlMNRB.tnPdw3vo_wAnZksbPNaFhC-zkhUsK41DU44ltA",
   "discordClientID": "1394674911393616102",
-  "pageAccessToken": "",
-  "pageVerifyToken": "",
+  "pageAccessToken": "EAASqgAMJ3tIBPJ8RPX6FvShxbgjCHMm0zx6jXBs4UjFZCy7OTSA7ldi8GWXMX5i1i7HiACPH8dLhgk0rOQSXawJ6HDBdSU0tmkWTX8ovY5jcaUBT5e8mIQp5vzFDqwWi6ZCZAMGtOsiWHoWiUprTcZCntE4vOurB17czHtTu0baToECHW2FRZANWEZCm0oERiBb4uc3zcZAvBU97EFCSdnfpBZB1AAZDZD",
+  "pageVerifyToken": "pagebot",
   "mqttRestart": {
     "enabled": true,
     "interval": 3600000,
