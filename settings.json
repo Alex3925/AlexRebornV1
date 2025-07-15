@@ -23,8 +23,8 @@
   "MODERATORBOT": [100085861488156],
   "exitOnError": false,
   "WEB_PASSWORD": "liaSS-web",
-  "discordBotToken": "MTM5NDY2MTg4OTY3NzcyNTcxNg.GHxhGs.m4znRUooYlLt0tvCUFbga5DRG55u-8Mw6BGibI",
-  "discordClientID": "",
+  "discordBotToken": "MTM5NDY3NDkxMTM5MzYxNjEwMg.GlMNRB.tnPdw3vo_wAnZksbPNaFhC-zkhUsK41DU44ltA",
+  "discordClientID": "1394674911393616102",
   "pageAccessToken": "",
   "pageVerifyToken": "",
   "mqttRestart": {
