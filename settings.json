@@ -9,7 +9,7 @@
   "railwayTips": "Use USA East as region for railway, and render. ",
   "GRADIENT_THEME": "retro",
   "knownURL": "https://alexrebornv1-1n16.onrender.com",
-  "noFB": false,
+  "noFB": true,
   "PREFIX": "/",
   "NICKNAME": "Alex Reborn V1",
   "CUSTOM_STYLE": {
@@ -23,9 +23,9 @@
   "MODERATORBOT": [100085861488156],
   "exitOnError": false,
   "WEB_PASSWORD": "liaSS-web",
-  "discordBotToken": "MTM5NDY3NDkxMTM5MzYxNjEwMg.GlMNRB.tnPdw3vo_wAnZksbPNaFhC-zkhUsK41DU44ltA",
+  "discordBotToken": "MTM5NDY3NDkxMTM5MzYxNjEwMg.Gd-qSd.WekituICPvQzAcXzjsbhv7CAGuQ4TThWtqzRec",
   "discordClientID": "1394674911393616102",
-  "pageAccessToken": "EAASqgAMJ3tIBPJ8RPX6FvShxbgjCHMm0zx6jXBs4UjFZCy7OTSA7ldi8GWXMX5i1i7HiACPH8dLhgk0rOQSXawJ6HDBdSU0tmkWTX8ovY5jcaUBT5e8mIQp5vzFDqwWi6ZCZAMGtOsiWHoWiUprTcZCntE4vOurB17czHtTu0baToECHW2FRZANWEZCm0oERiBb4uc3zcZAvBU97EFCSdnfpBZB1AAZDZD",
+  "pageAccessToken": "EAALIZBhs1kI8BPIKNtQR5vfFbTjqpDXCaHHj9gIyiNmPt988ETtdEQhXxsrgvUlF8FSfspxCACu7W9Ugz8kTSA26wT0fqAvMI5W3njdUM2eillismFe5uFpu61nHmb04qlbF0Rt0BDiOmSZAnVamuc358yYDJxIZCukQjjIxRQNsbMjU1Es9bOBVwmRYgxaAUD0IWpZAMQZDZD",
   "pageVerifyToken": "pagebot",
   "mqttRestart": {
     "enabled": true,
@@ -56,7 +56,7 @@
   "autoRefreshAvatar": false,
   "defaultLang": "en",
   "CASS_WATCH": {
-    "enabled": false,
+    "enabled": true,
     "note": "Cassidy Watch is a powerful file backup system that uses meta.version to track changes to your files. It is highly recommended to keep this enabled."
   },
   "autoCreateDB": false,
