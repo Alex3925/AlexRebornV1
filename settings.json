@@ -61,7 +61,7 @@
   },
   "autoCreateDB": false,
   "MongoConfig": {
-    "status": true,
+    "status": false,
     "uri": "MONGO_URI",
     "note": "DO NOT MODIFY THIS IF YOU DO NOT KNOW WHAT YOU WERE DOING. They serve as .env keys for mongo uri."
   },
@@ -101,5 +101,5 @@
   "disableUIDLinks": false,
   "ignoreUIDLinksOfAdminBOT": true,
   "disabledCategories": ["Xavia Economy", "Idle Accumulation Games"],
-  "showAuthorOnStyle": false
+  "showAuthorOnStyle": true
 }
